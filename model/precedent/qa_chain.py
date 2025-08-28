@@ -3,8 +3,6 @@ from langchain.prompts import PromptTemplate
 from langchain_openai import ChatOpenAI
 
 def build_qa_chain(qdrant_index):
-    from langchain.prompts import PromptTemplate
-
     custom_prompt = PromptTemplate(
         input_variables=["context", "question"],
         template="""

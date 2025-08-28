@@ -1,12 +1,18 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { GeistSans } from "geist/font/sans"
-import { GeistMono } from "geist/font/mono"
+import { Poppins } from "next/font/google"
 import "./globals.css"
 
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-poppins",
+  display: "swap",
+})
+
 export const metadata: Metadata = {
-  title: "KANOON AI - Legal Assistant",
-  description: "AI-powered legal assistant for research and precedent analysis",
+  title: "KANOON AI",
+  description: "Modern AI chatbot for Nepali users with voice input support",
   generator: "v0.app",
 }
 
@@ -17,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} antialiased`}>{children}</body>
+      <body className={`font-sans ${poppins.variable} antialiased`}>{children}</body>
     </html>
   )
 }
