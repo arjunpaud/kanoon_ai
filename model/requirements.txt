@@ -1,0 +1,28 @@
+# Core LangChain
+langchain
+langchain-core
+langchain-openai
+langchain-qdrant
+
+# Vector DB
+qdrant-client
+
+# OpenAI + tokenizer
+# openai
+tiktoken
+
+# Data validation (Pydantic v2 family)
+pydantic
+
+# Fixes for Windows builds
+regex
+grpcio
+grpcio-tools
+
+# Common utilities
+numpy
+python-dotenv
+
+langchain_huggingface
+
+sentence-transformers
