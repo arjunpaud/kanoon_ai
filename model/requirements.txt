@@ -26,3 +26,5 @@ python-dotenv
 langchain_huggingface
 
 sentence-transformers
+
+python-dotenv

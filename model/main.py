@@ -1,13 +1,18 @@
 import os
 import sys
 import json
+from dotenv import load_dotenv
 from pathlib import Path
 from rag.vectorstore import access_vectorstore as avs_rag
 from precedent.vectorstore import access_vectorstore as avs_precedent
 from rag.qa_chain import build_qa_chain
 
+load_dotenv()
+
+api_key = os.getenv("OPENAI_API_KEY")
+
 # Set OpenAI API key
-os.environ["OPENAI_API_KEY"] = "OPENAI_API_KEY"
+os.environ["OPENAI_API_KEY"] = api_key
 
 # Decide which vectorstore to use
 # qdrant_index = avs_rag()  # default

@@ -2,3 +2,4 @@ venv
 rag/__pycache__/
 precedent/__pycache__/
 *.pyc
+.env

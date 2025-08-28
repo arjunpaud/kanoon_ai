@@ -95,8 +95,8 @@ export default function ChatPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          message: inputText,
           model: selectedModel,
+          message: inputText,
         }),
       })
 

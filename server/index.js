@@ -7,6 +7,7 @@ import path from "path";
 const app = express();
 const PORT = 5000;
 
+app.use(cors());
 app.use(bodyParser.json());
 
 const pythonScript = path.resolve("../model/main.py");
