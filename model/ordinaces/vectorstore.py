@@ -1,6 +1,10 @@
 from langchain_qdrant import Qdrant, QdrantVectorStore
 from langchain_huggingface import HuggingFaceEmbeddings
 from qdrant_client import QdrantClient
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def access_vectorstore():
     # Embedding model (Nepali sentence transformer)
@@ -16,20 +20,14 @@ def access_vectorstore():
     # )
     # 1. Create Qdrant client
     client = QdrantClient(
-        url="QDRANT_URL",
-        api_key="API-KEY"
+        url=os.getenv("QDRANT_URL"),
+        api_key=os.getenv("QDRANT_API_KEY")
     )
 
     # 2. Load existing collection
     qdrant_index = QdrantVectorStore(
         client=client,
-        collection_name="nepali_law_rag",
+        collection_name="nepali_ordinaces_rag",
         embedding=embedding_model  # ✅ here it's `embedding`, not `embedding_function`
     )
-
-
-
-
-
-
     return qdrant_index

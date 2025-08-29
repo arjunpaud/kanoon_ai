@@ -1,7 +1,6 @@
 "use client"
 
 import type React from "react"
-
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -20,11 +19,22 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([])
   const [inputText, setInputText] = useState("")
   const [isLoading, setIsLoading] = useState(false)
-  const [selectedModel, setSelectedModel] = useState<"rag" | "precedent">("rag")
+  const [selectedModel, setSelectedModel] = useState<
+    "constitution" | "act" | "ordinances" | "orders" | "regulations" | "precedent"
+  >("constitution")
   const [isListening, setIsListening] = useState(false)
   const [showModelDropdown, setShowModelDropdown] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const models: { id: string; label: string }[] = [
+    { id: "constitution", label: "Constitution Model" },
+    { id: "act", label: "Act Model" },
+    { id: "ordinances", label: "Ordinances Model" },
+    { id: "orders", label: "Orders Model" },
+    { id: "regulations", label: "Regulations Model" },
+    { id: "precedent", label: "Precedent Model" },
+  ]
 
   // Auto-scroll to bottom when new messages are added
   useEffect(() => {
@@ -41,9 +51,7 @@ export default function ChatPage() {
       recognition.continuous = false
       recognition.interimResults = false
 
-      recognition.onstart = () => {
-        setIsListening(true)
-      }
+      recognition.onstart = () => setIsListening(true)
 
       recognition.onresult = (event: any) => {
         const transcript = event.results[0][0].transcript
@@ -51,24 +59,14 @@ export default function ChatPage() {
         setIsListening(false)
       }
 
-      recognition.onerror = () => {
-        setIsListening(false)
-      }
-
-      recognition.onend = () => {
-        setIsListening(false)
-      }
+      recognition.onerror = () => setIsListening(false)
+      recognition.onend = () => setIsListening(false)
 
       recognition.start()
     }
   }
 
-  const toggleModel = () => {
-    setSelectedModel((prev) => (prev === "rag" ? "precedent" : "rag"))
-    setShowModelDropdown(false)
-  }
-
-  const selectModel = (model: "rag" | "precedent") => {
+  const selectModel = (model: typeof selectedModel) => {
     setSelectedModel(model)
     setShowModelDropdown(false)
   }
@@ -88,23 +86,17 @@ export default function ChatPage() {
     setIsLoading(true)
 
     try {
-      // Simulate API call - replace with actual endpoint
-      const response = await fetch("http://127.0.0.1:5000/api/model", {
+      const response = await fetch("http://127.0.0.1:8000/ask", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          model: selectedModel,
-          message: inputText,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: selectedModel, message: inputText }),
       })
 
       if (response.ok) {
         const data = await response.json()
         const botMessage: Message = {
           id: (Date.now() + 1).toString(),
-          text: data.reply || "Sorry, I could not process your request.",
+          text: data["result"],
           sender: "bot",
           timestamp: new Date(),
         }
@@ -112,7 +104,7 @@ export default function ChatPage() {
       } else {
         throw new Error("Failed to get response")
       }
-    } catch (error) {
+    } catch {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: "Sorry, I encountered an error. Please try again.",
@@ -143,43 +135,30 @@ export default function ChatPage() {
           <div className="relative">
             <Button
               onClick={() => setShowModelDropdown(!showModelDropdown)}
-              className="flex items-center gap-3 bg-gray-900/80 hover:bg-gray-800 text-white border border-gray-700 px-5 py-2.5 rounded-lg transition-all duration-200 backdrop-blur-sm"
+              className="flex items-center gap-3 bg-gray-900/80 hover:bg-gray-800 text-white border border-gray-700 px-5 py-2.5 rounded-lg transition-all duration-200 backdrop-blur-sm cursor-pointer"
             >
               <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50"></div>
               <span className="capitalize font-semibold text-sm">{selectedModel} Model</span>
-              <ChevronDown
-                className={`w-4 h-4 transition-transform duration-200 ${showModelDropdown ? "rotate-180" : ""}`}
-              />
+              <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${showModelDropdown ? "rotate-180" : ""}`} />
             </Button>
 
             {showModelDropdown && (
               <div className="absolute top-full right-0 mt-3 bg-gray-900/95 backdrop-blur-md border border-gray-700 rounded-lg shadow-2xl z-20 min-w-[220px] overflow-hidden">
                 <div className="p-3">
-                  <button
-                    onClick={() => selectModel("rag")}
-                    className={`w-full text-left px-5 py-4 rounded-md text-sm transition-all duration-200 ${
-                      selectedModel === "rag"
-                        ? "bg-white text-black font-semibold"
-                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                    }`}
-                  >
-                    <div className="font-medium text-base">RAG Model</div>
-                    <div className="text-xs opacity-70 mt-2">
-                      Retrieval-Augmented Generation for accurate legal information
+                  {models.map((model) => (
+                    <div key={model.id} className="my-2">
+                      <button
+                        onClick={() => selectModel(model.id as typeof selectedModel)}
+                        className={`w-full text-left px-5 py-4 rounded-md text-sm transition-all duration-200 cursor-pointer ${
+                          selectedModel === model.id
+                            ? "bg-white text-black font-semibold"
+                            : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                        }`}
+                      >
+                        <div className="font-medium text-base">{model.label}</div>
+                      </button>
                     </div>
-                  </button>
-                  <div className="my-2"></div>
-                  <button
-                    onClick={() => selectModel("precedent")}
-                    className={`w-full text-left px-5 py-4 rounded-md text-sm transition-all duration-200 ${
-                      selectedModel === "precedent"
-                        ? "bg-white text-black font-semibold"
-                        : "text-gray-300 hover:bg-gray-800 hover:text-white"
-                    }`}
-                  >
-                    <div className="font-medium text-base">Precedent Model</div>
-                    <div className="text-xs opacity-70 mt-2">Legal precedent analysis and case law research</div>
-                  </button>
+                  ))}
                 </div>
               </div>
             )}
@@ -227,16 +206,10 @@ export default function ChatPage() {
               <div className="bg-gray-900/80 text-gray-300 px-5 py-4 rounded-lg border border-gray-800 backdrop-blur-sm flex items-center gap-3">
                 <div className="flex gap-1">
                   <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                  <div
-                    className="w-2 h-2 bg-white rounded-full animate-bounce"
-                    style={{ animationDelay: "0.1s" }}
-                  ></div>
-                  <div
-                    className="w-2 h-2 bg-white rounded-full animate-bounce"
-                    style={{ animationDelay: "0.2s" }}
-                  ></div>
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0.1s" }}></div>
+                  <div className="w-2 h-2 bg-white rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
                 </div>
-                <span className="font-medium">KANOON AI is thinking...</span>
+                <span className="font-medium">KANOON AI is thinking</span>
               </div>
             </div>
           )}
@@ -245,6 +218,7 @@ export default function ChatPage() {
         </div>
       </div>
 
+      {/* Input */}
       <div className="border-t border-gray-800 bg-black/90 backdrop-blur-md p-6 sticky bottom-0">
         <div className="max-w-4xl mx-auto">
           <div className="flex items-end gap-4">
@@ -255,7 +229,7 @@ export default function ChatPage() {
                 onChange={(e) => setInputText(e.target.value)}
                 onKeyPress={handleKeyPress}
                 placeholder="Ask anything about Nepali law..."
-                className="min-h-[56px] max-h-32 resize-none bg-gray-800/60 border-gray-600 text-white placeholder-gray-400 focus:border-gray-400 focus:ring-gray-400 focus:ring-1 rounded-xl px-5 py-4 text-base backdrop-blur-sm transition-all duration-200 hover:bg-gray-800/80"
+                className="min-h-[56px] max-h-32 resize-none bg-gray-800/60 border-gray-600 text-white placeholder-gray-400 focus:ring-gray-400 focus:ring-1 rounded-xl px-5 py-4 text-base backdrop-blur-sm transition-all duration-200 hover:bg-gray-800/80"
                 rows={1}
               />
             </div>
@@ -264,7 +238,7 @@ export default function ChatPage() {
               onClick={startListening}
               variant="outline"
               size="icon"
-              className={`h-[56px] w-[56px] rounded-xl border-gray-600 transition-all duration-200 backdrop-blur-sm ${
+              className={`h-[56px] w-[56px] rounded-xl transition-all duration-200 backdrop-blur-sm cursor-pointer ${
                 isListening
                   ? "bg-red-500/20 border-red-400 text-red-400 hover:bg-red-500/30"
                   : "bg-gray-800/60 text-gray-300 hover:text-white hover:bg-gray-700/80 hover:border-gray-500"
@@ -277,7 +251,7 @@ export default function ChatPage() {
             <Button
               onClick={sendMessage}
               disabled={!inputText.trim() || isLoading}
-              className="h-[56px] w-[56px] bg-gray-100 text-black hover:bg-white disabled:bg-gray-700/60 disabled:text-gray-500 rounded-xl transition-all duration-200 shadow-lg hover:shadow-gray-100/20 backdrop-blur-sm"
+              className="h-[56px] w-[56px] bg-gray-100 text-black hover:bg-white rounded-xl transition-all duration-200 shadow-lg hover:shadow-gray-100/20 backdrop-blur-sm cursor-pointer"
               size="icon"
             >
               <Send className="w-5 h-5" />

@@ -14,19 +14,20 @@ def access_vectorstore():
     # qdrant_index = Qdrant.from_documents(
     #     documents=docs,
     #     embedding=embedding_model,
+    #     url="",
+    #     api_key="",
     #     collection_name="nepali_law_rag"
     # )
     # 1. Create Qdrant client
     client = QdrantClient(
         url=os.getenv("QDRANT_URL"),
         api_key=os.getenv("QDRANT_API_KEY")
-
     )
 
     # 2. Load existing collection
     qdrant_index = QdrantVectorStore(
         client=client,
-        collection_name="nepali_precedent_rag",
+        collection_name="nepali_orders_rag",
         embedding=embedding_model  # ✅ here it's `embedding`, not `embedding_function`
     )
     return qdrant_index

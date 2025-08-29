@@ -26,7 +26,8 @@ def access_vectorstore():
     # 2. Load existing collection
     qdrant_index = QdrantVectorStore(
         client=client,
-        collection_name="nepali_precedent_rag",
+        collection_name="nepali_regulations_rag",
         embedding=embedding_model  # ✅ here it's `embedding`, not `embedding_function`
     )
     return qdrant_index
+

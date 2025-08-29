@@ -28,3 +28,6 @@ langchain_huggingface
 sentence-transformers
 
 python-dotenv
+
+fastapi
+uvicorn[standard]

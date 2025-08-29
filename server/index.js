@@ -11,8 +11,8 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const pythonScript = path.resolve("../model/main.py");
-const pythonVenv = path.resolve("../model/venv/bin/python"); 
-// On Windows: "../model/venv/Scripts/python.exe"
+const pythonVenv = path.resolve("../model/venv/Scripts/python.exe");
+// On Linux: "../model/venv/bin/python"
 
 app.post("/api/model", (req, res) => {
   const { message, model } = req.body;
@@ -34,13 +34,21 @@ app.post("/api/model", (req, res) => {
     error += data.toString();
   });
 
+
   pythonProcess.on("close", (code) => {
-    if (code === 0) {
-      res.json({ reply: output.trim() });
-    } else {
-      res.status(500).json({ error: error || "Python script failed" });
+    try {
+      const parsed = JSON.parse(output);
+      if (parsed.error) {
+        res.status(500).json({ error: parsed.error });
+      } else {
+        res.json({ reply: parsed.result });
+      }
+    } catch (err) {
+      res.status(500).json({ error: "Failed to parse Python output" });
     }
   });
+
+
 });
 
 app.listen(PORT, () => {
