@@ -1,7 +1,6 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Eye, EyeOff } from "lucide-react"
-import { useNavigate } from "react-router"
 
 import Alert from "./Alert"
 import Label from "./Label"
@@ -10,8 +9,6 @@ import Button from "./Button"
 import { cn } from "../lib/utils"
 
 export default function RegistrationForm({ bUrl }) {
-    const navigate = useNavigate()
-
     const [loading, setLoading] = useState(false)
     const [errorState, setErrorState] = useState(null)
     const [showPassword, setShowPassword] = useState(false)
@@ -40,11 +37,7 @@ export default function RegistrationForm({ bUrl }) {
             })
 
             if (res.ok) {
-                if (import.meta.env.DEV) {
-                    window.location.href = `${bUrl}/chat/login`
-                } else {
-                    navigate("/chat/login")
-                }
+                window.location.href = `${bUrl}/chat/login`
             } else {
                 console.error(`Server responded with a status of ${res.status}`)
                 const { detail } = await res.json()

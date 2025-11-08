@@ -1,5 +1,3 @@
-import { Link } from "react-router"
-
 import chainlitLogo from "./assets/chainlit_logo.svg"
 import RegistrationForm from "./components/RegistrationForm"
 
@@ -34,12 +32,12 @@ export default function Home() {
                             regulations.
                         </li>
                     </ul>
-                    <Link
-                        to={`${bUrl}/chat`}
+                    <a
+                        href={`${bUrl}/chat`}
                         className="mt-6 text-sm text-white h-10 px-4 py-2 rounded-md w-full sm:w-1/2 lg:w-3/4 text-center bg-[#f5145f] hover:bg-[#f5145f]/90 cursor-pointer"
                     >
                         Login or Open Chat
-                    </Link>
+                    </a>
                 </div>
             </div>
             <div className="flex flex-col gap-4 p-6 md:p-10">

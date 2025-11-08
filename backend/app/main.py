@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from chainlit.utils import mount_chainlit
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse, RedirectResponse
 
 from .routers import auth
 from .config import settings
@@ -19,6 +21,8 @@ if allowed_origins:
         allow_headers=["*"],
     )
 
+app.mount("/assets", StaticFiles(directory="app/dist/assets"), name="assets")
+
 
 @app.on_event("startup")
 def on_startup():
@@ -26,7 +30,12 @@ def on_startup():
 
 
 @app.get("/")
-def read_root():
+def home():
+    return RedirectResponse("/welcome")
+
+
+@app.get("/api")
+def api_home():
     return {
         "message": "The Kanoon AI API is functional! All functional routes are under `/api`. To access the chat, go to `/chat`"
     }
@@ -35,3 +44,13 @@ def read_root():
 app.include_router(auth.router)
 
 mount_chainlit(app=app, target="chainlit_app.py", path="/chat")
+
+
+@app.get("/favicon-32x32.png")
+async def serve_favicon():
+    return FileResponse("app/dist/favicon-32x32.png")
+
+
+@app.get("/welcome/{full_path:path}")
+async def serve_react_app(full_path: str):
+    return FileResponse("app/dist/index.html")
