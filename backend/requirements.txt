@@ -1,0 +1,25 @@
+# Langchain and Langchain Integrations 
+# w/ OpenAI, Qdrant and Hugging Face
+langchain
+langchain-openai
+langchain-qdrant
+langchain_huggingface
+sentence-transformers
+
+# Fixes for Windows builds
+regex
+grpcio
+grpcio-tools
+
+# Application Server, DB, Utilities
+pyjwt
+aiohttp
+asyncpg
+greenlet
+chainlit
+sqlmodel
+python-dotenv
+pwdlib[argon2]
+psycopg2-binary
+fastapi[standard]
+pydantic-settings

@@ -1,0 +1,14 @@
+venv
+.chainlit/
+__pycache__/
+acts/__pycache__/
+precedent/__pycache__/
+constitution/__pycache__/
+orders/__pycache__/
+regulations/__pycache__/
+ordinaces/__pycache__/
+
+
+
+*.pyc
+.env
