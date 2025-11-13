@@ -25,11 +25,15 @@ export default function Home() {
                         research.
                     </p>
                     <ul className="mt-6 text-neutral-400 flex flex-col gap-2">
-                        <li>🇳🇵Q/A in नेपाली</li>
-                        <li>👨‍⚖️ Get extensive answers about Nepali law</li>
+                        <li>🇳🇵 Q/A in नेपाली</li>
+                        <li>👨‍⚖️ Get extensive answers about Nepali Law</li>
                         <li>
                             📃 Excellent sourcing of relevant laws, acts and
-                            regulations.
+                            regulations
+                        </li>
+                        <li>
+                            ⚙️ Separate profiles or modes for Lawyers and
+                            General Q/A
                         </li>
                     </ul>
                     <a

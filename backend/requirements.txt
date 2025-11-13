@@ -1,6 +1,9 @@
-# Langchain and Langchain Integrations 
+numpy
+
+# Langchain and Langchain Integrations
 # w/ OpenAI, Qdrant and Hugging Face
 langchain
+openai
 langchain-openai
 langchain-qdrant
 langchain_huggingface
@@ -13,6 +16,7 @@ grpcio-tools
 
 # Application Server, DB, Utilities
 pyjwt
+pydub
 aiohttp
 asyncpg
 greenlet

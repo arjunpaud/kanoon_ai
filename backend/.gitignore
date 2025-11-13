@@ -1,5 +1,4 @@
 venv
-.chainlit/
 __pycache__/
 acts/__pycache__/
 precedent/__pycache__/
