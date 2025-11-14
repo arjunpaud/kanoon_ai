@@ -124,7 +124,7 @@ def transcribe_audio(audio_chunks: list):
     audio_buffer = wav_buffer.getvalue()
     whisper_input = ("audio.wav", audio_buffer, "audio/wav")
     transcript = openai_client.audio.transcriptions.create(
-        model="whisper-1",
+        model="gpt-4o-transcribe",
         file=whisper_input,
         language="ne",  # Nepali
         response_format="text",
