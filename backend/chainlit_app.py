@@ -65,13 +65,13 @@ def prompt_with_context(request: ModelRequest) -> str:
 
         doc_source = ""
         if act:
-            doc_source += f"Act: {act}"
+            doc_source += f"{act}"
         if section_num:
-            doc_source += f", Section No. {section_num}"
-        if section_title:
-            doc_source += f", Section Title: {section_title}"
+            doc_source += f", सेक्सन न. {section_num}"
         if subsection_num:
-            doc_source += f", Sub-Section No. {subsection_num}"
+            doc_source += f", उप-न. ({subsection_num})"
+        if section_title:
+            doc_source += f", शीर्षक: {section_title}"
         doc_source = doc_source.strip(", ")
 
         if doc_source != "":
@@ -85,7 +85,7 @@ def prompt_with_context(request: ModelRequest) -> str:
     )
 
     if sources != "":
-        system_message += f'\n\nAdd these sources at the end of your response under section called "Sources":\n\n{sources}'
+        system_message += f'\n\nAdd these sources at the end of your response under section called "स्रोत":\n\n{sources}'
 
     return system_message
 
@@ -137,12 +137,16 @@ def transcribe_audio(audio_chunks: list):
 async def chat_profile(current_user: cl.User):
     return [
         cl.ChatProfile(
-            name="Lawyer",
-            markdown_description="This model particularly focuses on **legal precedent** setting cases. Useful for **law professionals**.",
-        ),
-        cl.ChatProfile(
             name="General",
             markdown_description="This model gives **general answers** in regards to **Nepali Law**.",
+        ),
+        cl.ChatProfile(
+            name="Precedent Research",
+            markdown_description="This model particularly focuses on **legal precedent** setting cases. Useful for **law professionals** and **law students**.",
+        ),
+        cl.ChatProfile(
+            name="Act Research",
+            markdown_description="This model particularly focuses on **legal acts**.",
         ),
     ]
 
@@ -174,9 +178,15 @@ def on_chat_start():
 @cl.on_message
 async def main(message: cl.Message):
     chat_profile = cl.user_session.get("chat_profile")
-    vs_collection_name = (
-        "nepali_precedent_rag" if chat_profile == "Lawyer" else "nepali_law_ai"
-    )
+
+    mapping = {
+        "General": "nepali_law_ai",
+        "Precedent Research": "nepali_precedent_rag",
+        "Act Research": "nepali_act_rag",
+    }
+
+    vs_collection_name = mapping[chat_profile]
+    print(f"USING COLLECTION: {vs_collection_name}")
 
     msg = cl.Message(
         content="",
@@ -232,6 +242,8 @@ async def on_audio_end():
         if audio_chunks:
             transcript = transcribe_audio(audio_chunks)
             cl.user_session.set("audio_chunks", [])
+            # await cl.Message(content=f"Audio understood as: {transcript}").send()
+            # return
 
             msg = cl.Message(
                 content="",
@@ -258,7 +270,6 @@ async def on_audio_end():
             state["messages"].append({"role": "assistant", "content": content})
             new_state = await agent.ainvoke(state)
             cl.user_session.set("state", new_state)
-            # await cl.Message(content=f"Audio understood as: {transcript}").send()
     except Exception as e:
         print(f"Error transcribing audio: {e}")
         await cl.Message(content="Error transcribing audio").send()

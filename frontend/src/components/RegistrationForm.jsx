@@ -188,7 +188,7 @@ export default function RegistrationForm({ bUrl }) {
 
                     <Button
                         type="submit"
-                        className="w-full text-white bg-[#f5145f] hover:bg-[#f5145f]/90 cursor-pointer"
+                        className="w-full text-white bg-[#2460b9] hover:bg-[#2460b9]/90 cursor-pointer"
                         disabled={loading}
                     >
                         Register

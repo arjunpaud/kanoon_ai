@@ -1,0 +1,13 @@
+button[type="submit"] {
+    background-color: hsl(216 67% 43%) !important;
+    border-color: hsl(216 67% 43%) !important;
+    color: hsl(0 0% 100%) !important;
+}
+
+div#new-chat-dialog p > span {
+    display: none !important;
+}
+
+.watermark {
+    display: none !important;
+}

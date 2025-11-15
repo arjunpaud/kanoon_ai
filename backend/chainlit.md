@@ -8,5 +8,5 @@ Kanoon AI is all about **empowering citizens and lawyers** of Nepal with **guida
 
 -   🇳🇵 Q/A in नेपाली language
 -   👨‍⚖️ Extensive answers about Nepali Law
--   📃 Excellent sourcing of relevant laws, acts and regulations
--   ⚙️ Separate profiles or modes for Lawyers and General Q/A
+-   📃 Excellent sourcing of relevant Laws, Acts and Regulations
+-   ⚙️ Separate profiles or modes for Precedent Research and General Q/A
